@@ -1,4 +1,4 @@
-import request from '@/utils/myrequest'
+import request from '@/utils/request'
 
 //获取所有 指定ns下的deployments
 export function getList(ns) {
