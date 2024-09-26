@@ -35,12 +35,14 @@
 
 <script>
   import { getList } from '@/api/deployments'
+  import { NewClient } from "@/utils/ws";
 
   export default {
     data() {
       return {
         list: null,
-        listLoading: true
+        listLoading: true,
+        wsClient:null
       }
     },
     created() {
@@ -49,10 +51,19 @@
     methods: {
       fetchData() {
         this.listLoading = true
+        // 通过rest api 获取
         getList("default").then(response => {
           this.list = response.data
           this.listLoading = false
         })
+        this.wsClient = NewClient()
+        // 通过websocker获取,并动态刷新
+        this.wsClient.onmessage = (e)=>{
+          if(e.data !== 'ping'){
+            this.list = JSON.parse(e.data)
+            this.$forceUpdate()
+          }
+        }
       }
     }
   }
