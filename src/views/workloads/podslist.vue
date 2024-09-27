@@ -14,7 +14,11 @@
               {{ scope.$index+1 }}
             </template>
           </el-table-column>
-
+          <el-table-column label="状态" width="80">
+            <template slot-scope="scope">
+              <p class="bold-text" v-html="getStatus(scope.row.IsReady)"></p>
+            </template>
+          </el-table-column>
           <el-table-column label="名称" width="350">
             <template slot-scope="scope">
               <p>{{ scope.row.Name }}</p>
@@ -53,7 +57,6 @@ export default {
       this.nslist.forEach(ns=>{ //循环获取pods
         this.loadPods(ns.Name)
       })
-
     })
   },
   methods:{
@@ -61,12 +64,23 @@ export default {
       getPodsByNs(ns).then(rsp=>{
         this.$set(this.pods, ns, rsp.data)
       })
-    }
+    },
+    getStatus(isReady){
+      if(isReady)
+        return "<span class='green'>Active</span>"
+      return "<span class='red'>Waiting</span>"
+    },
   }
 }
 
 </script>
 <style>
+.red{color: #d20000
+}
+.green{color:green}
+.bold-text {
+  font-weight: bold;
+}
 .el-header, .el-footer {
   background-color: #7cd1c0;
   color: #fff;
