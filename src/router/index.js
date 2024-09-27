@@ -69,7 +69,7 @@ export const constantRoutes = [
         meta: { title: 'deployments列表', icon: 'table' }
       },
       {
-        path: 'podss',
+        path: 'pods',
         name: 'Pods',
         component: () => import('@/views/workloads/podslist'),
         meta: { title: 'Pods列表', icon: 'tree' }
