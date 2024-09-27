@@ -1,15 +1,5 @@
 <template>
   <div>
-    <div style="margin:30px 0 30px 10px">
-      <p><label>Pod总数:</label>
-        <span>{{podsNum}}</span>
-
-        <label>就绪:</label>
-        <span class="green"> {{ podsReadyNum }}</span>
-
-      </p>
-
-    </div>
     <el-container v-for="ns in nslist"  >
       <el-header>{{ ns.Name }}</el-header>
       <el-main>
@@ -54,36 +44,47 @@
 
 </template>
 <script>
-import { getList } from "@/api/ns";
-import { getPodsByNs } from "@/api/pods";
+import { getList } from "@/api/ns"
+import { getPodsByNs } from "@/api/pods"
+import { NewClient } from "@/utils/ws"
 
 export default {
   data(){
     return {
       nslist:null,
       pods:{},
-      podsNum:0,
-      podsReadyNum:0
+      wsClient: null
     }
   },
   created() {
+    this.wsClient = NewClient()
     getList().then(response => {
       this.nslist = response.data  // namespace 列表
       this.nslist.forEach(ns=>{ //循环获取pods
         this.loadPods(ns.Name)
       })
+      // 通过websocker获取,并动态刷新
+      this.wsClient.onmessage = (e) => {
+        if (e.data !== 'ping') {
+          const object = JSON.parse(e.data)
+          if (object.type === 'pods') {
+            this.$set(this.pods, object.result.ns, object.result.data)
+            const podsns = this.pods[object.result.ns] || []
+            this.podsNum += podsns.length
+            this.podsReadyNum += podsns.filter(item => item.IsReady).length
+          }
+        }
+      }
     })
   },
   methods:{
     loadPods(ns){
       getPodsByNs(ns).then(rsp=>{
         this.$set(this.pods, ns, rsp.data)
-        this.pods[ns].forEach(item=>{
-          this.podsNum++
-          if (item.IsReady){
-            this.podsReadyNum++
-          }
-        })
+        const podsns = this.pods[ns] || []
+        this.podsNum += podsns.length
+        this.podsReadyNum += podsns.filter(item => item.IsReady).length
+
       })
     },
     getStatus(isReady){

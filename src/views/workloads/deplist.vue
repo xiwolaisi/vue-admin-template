@@ -48,50 +48,51 @@
 </template>
 
 <script>
-  import { getList } from '@/api/deployments'
-  import { NewClient } from "@/utils/ws";
-
-  export default {
-    data() {
-      return {
-        list: null,
-        listLoading: true,
-        wsClient:null
-      }
-    },
-    created() {
-      this.fetchData()
-    },
-    methods: {
-      fetchData() {
-        this.listLoading = true
-        // 通过rest api 获取
-        getList("default").then(response => {
-          this.list = response.data
-          this.listLoading = false
-        })
-        this.wsClient = NewClient()
-        // 通过websocker获取,并动态刷新
-        this.wsClient.onmessage = (e)=>{
-          if(e.data !== 'ping'){
-            this.list = JSON.parse(e.data)
-            this.$forceUpdate()
+import { getList } from '@/api/deployments'
+import { NewClient } from "@/utils/ws"
+export default {
+  data() {
+    return {
+      list: null,
+      listLoading: true,
+      wsClient: null
+    }
+  },
+  created() {
+    this.fetchData()
+  },
+  methods: {
+    fetchData() {
+      this.listLoading = true
+      this.wsClient = NewClient()
+      // 通过rest api 获取
+      getList("default").then(response => {
+        this.list = response.data
+        this.listLoading = false
+      })
+      // 通过websocker获取,并动态刷新
+      this.wsClient.onmessage = (e) => {
+        if (e.data !== 'ping') {
+          const object = JSON.parse(e.data)
+          if (object.type === 'deployments') {
+            this.$set(this, 'list', object.result.data)
           }
         }
-      },
-      getStatus(row){
-        if(row.IsComplete)
-          return "<span class='green'>Active</span>"
-        return "<span class='red'>Waiting</span>"
-      },
-      getMessage(row){
-        if(!row.IsComplete){
-          return row.Message
-        }
-        return ''
       }
+    },
+    getStatus(row) {
+      if (row.IsComplete)
+        return "<span class='green'>Active</span>"
+      return "<span class='red'>Waiting</span>"
+    },
+    getMessage(row) {
+      if (!row.IsComplete) {
+        return row.Message
+      }
+      return ''
     }
   }
+}
 </script>
 <style>
 .red{color: #d20000
