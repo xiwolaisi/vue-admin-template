@@ -1,5 +1,15 @@
 <template>
   <div>
+    <div style="margin:30px 0 30px 10px">
+      <p><label>Pod总数:</label>
+        <span>{{podsNum}}</span>
+
+        <label>就绪:</label>
+        <span class="green"> {{ podsReadyNum }}</span>
+
+      </p>
+
+    </div>
     <el-container v-for="ns in nslist"  >
       <el-header>{{ ns.Name }}</el-header>
       <el-main>
@@ -53,6 +63,8 @@ export default {
     return {
       nslist:null,
       pods:{},
+      podsNum:0,
+      podsReadyNum:0,
       wsClient: null
     }
   },
@@ -68,10 +80,11 @@ export default {
         if (e.data !== 'ping') {
           const object = JSON.parse(e.data)
           if (object.type === 'pods') {
+            this.podsNum = 0;
+            this.podsReadyNum = 0
             this.$set(this.pods, object.result.ns, object.result.data)
-            const podsns = this.pods[object.result.ns] || []
-            this.podsNum += podsns.length
-            this.podsReadyNum += podsns.filter(item => item.IsReady).length
+            // 重新计算所有命名空间的 Pod 总数和就绪数
+            this.calculateTotalPods()
           }
         }
       }
@@ -81,9 +94,8 @@ export default {
     loadPods(ns){
       getPodsByNs(ns).then(rsp=>{
         this.$set(this.pods, ns, rsp.data)
-        const podsns = this.pods[ns] || []
-        this.podsNum += podsns.length
-        this.podsReadyNum += podsns.filter(item => item.IsReady).length
+        // 重新计算所有命名空间的 Pod 总数和就绪数
+        this.calculateTotalPods()
 
       })
     },
@@ -108,6 +120,15 @@ export default {
         return row.Message
       }
       return ''
+    },
+    calculateTotalPods() {
+      // 遍历所有命名空间的 pods 并更新总计数器
+      this.podsNum = 0;
+      this.podsReadyNum = 0;
+      Object.values(this.pods).forEach(pods => {
+        this.podsNum += (pods || []).length;
+        this.podsReadyNum += (pods || []).filter(item => item.IsReady).length;
+      })
     }
   }
 }
