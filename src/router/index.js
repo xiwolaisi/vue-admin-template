@@ -83,7 +83,28 @@ export const constantRoutes = [
 
     ]
   },
+  {
+    path: '/ingress',
+    component: Layout,
+    redirect: '/ingress/ingress-list',
+    name: 'ingress',
+    meta: { title: 'Ingress管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'ingress-list',
+        name: 'Ingress-list',
+        component: () => import('@/views/ingress/ingress-list'),
+        meta: { title: 'Ingress列表', icon: 'table' }
+      },
+      {
+        path: 'createingress',
+        name: 'Createingress',
+        component: () => import('@/views/ingress/ingress-create'),
+        meta: { title: '创建ingress', icon: 'tree' }
+      },
 
+    ]
+  },
   {
     path: '/form',
     component: Layout,
