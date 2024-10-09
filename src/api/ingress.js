@@ -7,3 +7,15 @@ export function getList(ns) {
     method: 'get',
   })
 }
+
+// 新增ingress
+export function postIngress(data) {
+  return request({
+    url: '/ingress',
+    method: 'post',
+    data
+  })
+}
+
+
+
