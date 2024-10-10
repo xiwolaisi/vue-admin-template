@@ -1,76 +1,104 @@
 <template>
-  <div class="app-container">
-    <el-table
-      v-loading="listLoading"
-      :data="list"
-      element-loading-text="Loading"
-      border
-      fit
-      highlight-current-row
-    >
-      <el-table-column align="center" label="序号" width="95">
-        <template slot-scope="scope">
-          {{ scope.$index+1 }}
-        </template>
-      </el-table-column>
-      <el-table-column label="状态" width="100">
-        <template slot-scope="scope">
-          <p></p>
-        </template>
-      </el-table-column>
-      <el-table-column label="名称" width="350">
-        <template slot-scope="scope">
-          <p>{{ scope.row.Name }}</p>
-        </template>
-      </el-table-column>
-      <el-table-column label="命名空间" width="110" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.NameSpace }}</span>
-        </template>
-      </el-table-column>
-      <el-table-column label="创建时间" width="170" align="center">
-        <template slot-scope="scope">
-          <span>{{ scope.row.CreateTime }}</span>
-        </template>
-      </el-table-column>
-    </el-table>
+  <div>
+    <el-container v-for="ns in nslist"  >
+      <el-header>{{ ns.Name }}</el-header>
+      <el-main>
+        <el-table
+            :data="ingresslist[ns.Name]"
+            border
+            fit
+            highlight-current-row
+            :summary-method="getCount"
+            show-summary
+        >
+          <el-table-column align="center" label="序号" width="95">
+            <template slot-scope="scope">
+              {{ scope.$index+1 }}
+            </template>
+          </el-table-column>
+          <el-table-column label="状态" width="80">
+            <template slot-scope="scope">
+            </template>
+          </el-table-column>
+          <el-table-column label="名称" width="350">
+            <template slot-scope="scope">
+              <p>{{ scope.row.Name }}</p>
+            </template>
+          </el-table-column>
+          <el-table-column label="创建时间" width="170" align="center">
+            <template slot-scope="scope">
+              {{ scope.row.CreateTime }}
+            </template>
+          </el-table-column>
+        </el-table>
+      </el-main>
+    </el-container>
   </div>
-</template>
 
+</template>
 <script>
-import { getList } from '@/api/ingress'
-import { NewClient } from "@/utils/ws";
+import { getList  as getNsList } from '@/api/ns'
+import { getList  as getIngressList } from '@/api/ingress'
+import { NewClient } from "@/utils/ws"
 
 export default {
-  data() {
+  data(){
     return {
-      list: null,
-      listLoading: true,
-      wsClient:null
+      nslist:null,
+      svclist:{},
+      ingresslist:{},
+      wsClient: null
     }
   },
   created() {
     this.wsClient = NewClient()
-    this.fetchData()
-  },
-  methods: {
-    fetchData() {
-      this.listLoading = true
-      // 通过rest api 获取
-      getList("default").then(response => {
-        this.list = response.data
-        this.listLoading = false
+    getNsList().then(response => {
+      this.nslist = response.data  // namespace 列表
+      this.nslist.forEach(ns=>{ //循环获取pods
+        this.loadIngress(ns.Name)
       })
+      // 通过websocker获取,并动态刷新
       this.wsClient.onmessage = (e) => {
         if (e.data !== 'ping') {
           const object = JSON.parse(e.data)
-          if (object.type === 'ingress') {
-            this.$set(this, 'list', object.result.data)
-            this.$forceUpdate()
+          if (object.type === 'service') {
+            this.$set(this.ingresslist, object.result.ns, object.result.data)
           }
         }
       }
+    })
+  },
+  methods:{
+    loadIngress(ns){
+      getIngressList(ns).then(rsp=>{
+        this.$set(this.ingresslist, ns, rsp.data)
+
+      })
+    },
+    getCount(param){
+      const { data } =param
+      let podAllNum=0
+      const sum=[]
+      sum[0] = 'Service合计'
+      data.forEach(item=>{
+        podAllNum++
+      })
+      sum[1]=podAllNum
+      return sum
     }
   }
 }
+
 </script>
+<style>
+.bold-text {
+  font-weight: bold;
+}
+.el-header, .el-footer {
+  background-color: #7cd1c0;
+  color: #fff;
+  text-align: center;
+  line-height: 60px;
+
+}
+</style>
