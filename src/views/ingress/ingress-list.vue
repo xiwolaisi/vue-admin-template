@@ -20,7 +20,12 @@
             <template slot-scope="scope">
             </template>
           </el-table-column>
-          <el-table-column label="名称" width="350">
+          <el-table-column label="域名" width="200">
+            <template slot-scope="scope">
+              <p><a target="_blank" :href="'http://'+scope.row.Host">{{ scope.row.Host }}</a></p>
+            </template>
+          </el-table-column>
+          <el-table-column label="名称" width="150">
             <template slot-scope="scope">
               <p>{{ scope.row.Name }}</p>
             </template>
@@ -30,6 +35,12 @@
               {{ scope.row.CreateTime }}
             </template>
           </el-table-column>
+          <el-table-column label="操作" width="100" align="center">
+            <template slot-scope="scope">
+              <el-button type="danger" @click="()=>rmIngress(scope.row.NameSpace,scope.row.Name )" icon="el-icon-delete" circle></el-button>
+            </template>
+          </el-table-column>
+        </el-table>
         </el-table>
       </el-main>
     </el-container>
@@ -39,6 +50,7 @@
 <script>
 import { getList  as getNsList } from '@/api/ns'
 import { getList  as getIngressList } from '@/api/ingress'
+import { rmIngress } from '@/api/ingress'
 import { NewClient } from "@/utils/ws"
 
 export default {
@@ -57,11 +69,11 @@ export default {
       this.nslist.forEach(ns=>{ //循环获取pods
         this.loadIngress(ns.Name)
       })
-      // 通过websocker获取,并动态刷新
+      // 通过websocket获取,并动态刷新
       this.wsClient.onmessage = (e) => {
         if (e.data !== 'ping') {
           const object = JSON.parse(e.data)
-          if (object.type === 'service') {
+          if (object.type === 'ingress') {
             this.$set(this.ingresslist, object.result.ns, object.result.data)
           }
         }
@@ -85,7 +97,17 @@ export default {
       })
       sum[1]=podAllNum
       return sum
-    }
+    },
+    rmIngress(ns,name){
+      this.$confirm('是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning',
+        center: true
+      }).then(() => {
+        rmIngress(ns,name)
+      })
+    },
   }
 }
 
