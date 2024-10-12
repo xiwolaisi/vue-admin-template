@@ -20,6 +20,19 @@
     </el-card>
     <el-card class="box-card">
       <div slot="header" class="clearfix">
+        <span>标签设置</span>
+      </div>
+      <div>
+        <el-input
+            type="textarea"
+            :rows="2"
+            placeholder="请输入内容"
+            v-model="annotations">
+        </el-input>
+      </div>
+    </el-card>
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
         <span>规则</span>
       </div>
       <el-form v-model="rules"   v-for="(rule,ruleindex) in rules">
@@ -76,6 +89,7 @@ export default {
       nslist:[], //ns列表
       svclist:[], // service 列表
       errorMsg:"", //错误信息
+      annotations:"", //标签
     }
   },
   created(){
@@ -119,7 +133,7 @@ export default {
       })
     },
     postNew(){//新增ingress
-      const data={Name:this.name,Namespace:this.namespace,Rules:this.rules}
+      const data={Name:this.name,Namespace:this.namespace,Rules:this.rules,Annotations:this.annotations,}
       postIngress(data).then((rsp)=>{
         this.errorMsg= ''
         alert("成功")
