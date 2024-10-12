@@ -53,7 +53,9 @@
         </el-form>
 
     </el-card>
-
+    <div style="text-align: center;margin-top: 20px;color:red">
+      {{errorMsg}}
+    </div>
     <div style="text-align: center;margin-top: 20px">
       <el-button type="primary" @click="postNew()">保存</el-button>
     </div>
@@ -72,7 +74,8 @@ export default {
         {host:"",paths:[{path:"",svc_name:"",port:"80"}]}
       ],
       nslist:[], //ns列表
-      svclist:[] // service 列表
+      svclist:[], // service 列表
+      errorMsg:"", //错误信息
     }
   },
   created(){
@@ -115,10 +118,17 @@ export default {
         }
       })
     },
-    postNew(){
+    postNew(){//新增ingress
       const data={Name:this.name,Namespace:this.namespace,Rules:this.rules}
       postIngress(data).then((rsp)=>{
-        console.log(rsp.data)
+        this.errorMsg= ''
+        alert("成功")
+      }).catch((error)=>{
+        if(error.response){
+          this.errorMsg = JSON.stringify(error.response.data)
+        }else{
+          this.errorMsg = JSON.stringify(error.message)
+        }
       })
     }
   }
