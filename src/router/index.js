@@ -125,6 +125,13 @@ export const constantRoutes = [
         meta: { title: '创建Secrets', icon: 'tree' }
       },
       {
+        path: 'secretget',
+        name: 'SecretGet',
+        component: () => import('@/views/resources/secrets-get'),
+        meta: { title: '查看Secrets', icon: 'tree' },
+        hidden:true
+      },
+      {
         path: 'configmap-list',
         name: 'ConfigMap-list',
         component: () => import('@/views/resources/configmap-list'),

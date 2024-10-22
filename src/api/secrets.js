@@ -23,5 +23,10 @@ export function rmSecret(ns,name) {
 
   })
 }
-
+export function getSecret(ns,name) {
+  return request({
+    url: '/secrets/'+ns+'/'+name ,
+    method: 'get',
+  })
+}
 
