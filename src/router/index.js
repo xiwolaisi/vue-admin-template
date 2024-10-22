@@ -106,28 +106,28 @@ export const constantRoutes = [
     ]
   },
   {
-    path: '/reources',
+    path: '/resources',
     component: Layout,
-    redirect: '/reources/secrets-list',
+    redirect: '/resources/secrets-list',
     name: 'ingress',
     meta: { title: '资源管理', icon: 'el-icon-s-help' },
     children: [
       {
         path: 'secrets-list',
         name: 'Secrets-list',
-        component: () => import('@/views/reources/secrets-list'),
+        component: () => import('@/views/resources/secrets-list'),
         meta: { title: 'Secrets列表', icon: 'table' }
       },
       {
         path: 'createingress',
         name: 'Createingress',
-        component: () => import('@/views/reources/secrets-list'),
+        component: () => import('@/views/resources/secrets-create'),
         meta: { title: '创建Secrets', icon: 'tree' }
       },
       {
         path: 'configmap-list',
         name: 'ConfigMap-list',
-        component: () => import('@/views/reources/configmap-list'),
+        component: () => import('@/views/resources/configmap-list'),
         meta: { title: 'ConfigMap列表', icon: 'table' }
       },
 
