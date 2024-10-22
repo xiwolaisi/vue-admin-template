@@ -119,8 +119,8 @@ export const constantRoutes = [
         meta: { title: 'Secrets列表', icon: 'table' }
       },
       {
-        path: 'createingress',
-        name: 'Createingress',
+        path: 'createsecret',
+        name: 'Createsecret',
         component: () => import('@/views/resources/secrets-create'),
         meta: { title: '创建Secrets', icon: 'tree' }
       },
