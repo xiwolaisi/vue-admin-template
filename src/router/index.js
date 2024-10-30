@@ -143,6 +143,13 @@ export const constantRoutes = [
         component: () => import('@/views/resources/configmap-create'),
         meta: { title: '创建ConfigMap', icon: 'tree' }
       },
+      {
+        path: 'configmapget',
+        name: 'ConfigmapGet',
+        component: () => import('@/views/resources/configmap-get'),
+        meta: { title: '查看ConfigMap', icon: 'tree' },
+        hidden:true
+      },
 
     ]
   },

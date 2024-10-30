@@ -22,5 +22,11 @@ export function rmConfigmap(ns,name) {
 
   })
 }
+export function getConfigmap(ns,name) {
+  return request({
+    url: '/configmap/'+ns+'/'+name ,
+    method: 'get',
+  })
+}
 
 

@@ -28,7 +28,8 @@
           </el-table-column>
           <el-table-column label="名称" width="150">
             <template slot-scope="scope">
-              <p>{{ scope.row.Name }}</p>
+              <p><router-link :to="{name:'ConfigmapGet',
+              params:{ns:scope.row.NameSpace,name:scope.row.Name}}">{{ scope.row.Name }}</router-link></p>
             </template>
           </el-table-column>
           <el-table-column label="创建时间" width="170" align="center">
