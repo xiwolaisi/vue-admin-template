@@ -8,7 +8,6 @@ export function getList(ns) {
   })
 }
 
-// 新增ingress
 export function postSecret(data) {
   return request({
     url: '/secrets',

@@ -137,6 +137,12 @@ export const constantRoutes = [
         component: () => import('@/views/resources/configmap-list'),
         meta: { title: 'ConfigMap列表', icon: 'table' }
       },
+      {
+        path: 'createconfigmap',
+        name: 'Createconfigmap',
+        component: () => import('@/views/resources/configmap-create'),
+        meta: { title: '创建ConfigMap', icon: 'tree' }
+      },
 
     ]
   },
