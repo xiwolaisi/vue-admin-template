@@ -81,6 +81,12 @@ export const constantRoutes = [
         meta: { title: '查看Pods日志', icon: 'tree' }
       },
       {
+        path: 'podshell',
+        name: 'Podshell',
+        component: () => import('@/views/workloads/podshell'),
+        meta: { title: 'Podshell', icon: 'tree' }
+      },
+      {
         path: 'serivces',
         name: 'Serivces',
         component: () => import('@/views/workloads/svclist'),
