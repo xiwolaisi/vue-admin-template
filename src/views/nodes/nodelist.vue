@@ -15,8 +15,12 @@
       </el-table-column>
       <el-table-column label="名称" width="300">
         <template slot-scope="scope">
-          {{ scope.row.Name }}
-          <p class="red">{{ getMessage(scope.row) }}</p>
+          <p>{{ scope.row.Name }}<br>
+          <el-tag type="success" v-for="label in scope.row.Labels">{{label}}</el-tag>
+          <br/>
+            <el-tag type="danger" v-for="taint in scope.row.Taints">{{taint}}</el-tag>
+            <br/>
+          <p/>
         </template>
       </el-table-column>
       <el-table-column label="IP" width="110" align="center">
@@ -36,8 +40,8 @@
       </el-table-column>
       <el-table-column label="操作" width="200" align="center">
         <template slot-scope="scope">
-          <router-link :to="{name:'Nodeshell',
-              params:{name:scope.row.Name}}">Webshell<i class="el-icon-s-platform"></i></router-link>
+          <router-link :to="{name:'Nodedatail',params:{name:scope.row.Name}}">详情<i class="el-icon-document"></i></router-link>
+          <router-link :to="{name:'Nodeshell',params:{name:scope.row.Name}}">Webshell<i class="el-icon-s-platform"></i></router-link>
         </template>
       </el-table-column>
 

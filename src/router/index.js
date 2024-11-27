@@ -68,11 +68,18 @@ export const constantRoutes = [
         meta: { title: '节点管理', icon: 'table' },
       },
       {
+        path: 'nodedetail',
+        name: 'Nodedatail',
+        component: () => import('@/views/nodes/nodedetail'),
+        meta: { title: '节点详情', icon: 'table' },
+        hidden:true,
+      },
+      {
         path: 'nodeshell',
         name: 'Nodeshell',
         component: () => import('@/views/nodes/nodeshell'),
         meta: { title: '节点shell', icon: 'table' },
-        //hidden:true,
+        hidden:true,
       }
     ]
   },
