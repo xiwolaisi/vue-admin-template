@@ -13,7 +13,7 @@
           {{ scope.$index+1 }}
         </template>
       </el-table-column>
-      <el-table-column label="名称" width="300">
+      <el-table-column label="名称" width="200">
         <template slot-scope="scope">
           <p>{{ scope.row.Name }}<br>
           <el-tag type="success" v-for="label in scope.row.Labels">{{label}}</el-tag>
@@ -28,9 +28,24 @@
           <span>{{ scope.row.IP }}</span>
         </template>
       </el-table-column>
-      <el-table-column label="主机名" width="150" align="center">
+      <el-table-column label="主机名" width="120" align="center">
         <template slot-scope="scope">
           {{ scope.row.HostName }}
+        </template>
+      </el-table-column>
+      <el-table-column label="CPU" width="100" align="center">
+        <template slot-scope="scope">
+          {{ Math.round(scope.row.Usage.CPU*100) }}%/{{ scope.row.Capacity.CPU }}核
+        </template>
+      </el-table-column>
+      <el-table-column label="内存" width="100" align="center">
+        <template slot-scope="scope">
+          {{ Math.round(scope.row.Usage.Memory*100) }}%/ {{ Math.round(scope.row.Capacity.Memory/1024/1024/1024)}}G
+        </template>
+      </el-table-column>
+      <el-table-column label="Pods" width="100" align="center">
+        <template slot-scope="scope">
+          {{ scope.row.Usage.Pods }}/{{ scope.row.Capacity.Pods }}
         </template>
       </el-table-column>
       <el-table-column label="创建时间" width="180" align="center">
