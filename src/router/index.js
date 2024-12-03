@@ -84,6 +84,21 @@ export const constantRoutes = [
     ]
   },
   {
+    path: '/rbac',
+    component: Layout,
+    redirect: '/rbac/rolelist',
+    name: 'RBAC',
+    meta: { title: 'RBAC管理', icon: 'el-icon-s-help' },
+    children: [
+      {
+        path: 'rolelist',
+        name: 'Rolelist',
+        component: () => import('@/views/rbac/roleslist'),
+        meta: { title: 'Role列表', icon: 'table' },
+      }
+    ]
+  },
+  {
     path: '/workloads',
     component: Layout,
     redirect: '/workloads/deployments',
