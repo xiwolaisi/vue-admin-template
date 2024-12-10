@@ -95,6 +95,12 @@ export const constantRoutes = [
         name: 'Rolelist',
         component: () => import('@/views/rbac/roleslist'),
         meta: { title: 'Role列表', icon: 'table' },
+      },
+      {
+        path: 'createrolel',
+        name: 'Createrole',
+        component: () => import('@/views/rbac/createrole'),
+        meta: { title: '创建Role', icon: 'table' },
       }
     ]
   },
