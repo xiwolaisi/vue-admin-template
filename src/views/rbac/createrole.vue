@@ -20,8 +20,8 @@
         <span>资源授权</span>
       </div>
       <el-form v-for="(rule, ruleindex) in rules" :key="ruleindex" :inline="true">
-        <el-form-item label="Api组">
-          <el-select v-model="rule.groupversion" @change="(v)=>updateVerbs(v, ruleindex)">
+        <el-form-item label="选择资源">
+          <el-select v-model="rule.groupres" @change="(v)=>updateVerbs(v, ruleindex)">
             <el-option-group
                 v-for="(group, index) in resources"
                 :key="group.Group+index"
@@ -57,6 +57,7 @@
 <script>
 import { getList as getNsList } from '@/api/ns';
 import { getResources } from '@/api/resources';
+import { CreateRole } from '@/api/roles';
 
 export default {
   data() {
@@ -64,10 +65,13 @@ export default {
       roleName: '',
       namespace: '',
       namespaces: [],
-      rules:[
-        { groupversion:"",verbs:[],verbscopy:[] }
+      rules:[ //前端展示用的
+        { groupres:"",verbs:[],verbscopy:[] }
       ],
-      resources: [],
+      postRules:[
+        //{apiGroups:[],resources:[],verbs:[]}
+      ],
+      resources: [], //从后端/resources请求得到的所有group和资源列表
     };
   },
   async created() {
@@ -107,8 +111,37 @@ export default {
       this.rules[index].verbs = [];
       this.rules[index].verbscopy = verbs;
     },
+    //拼接
+    concatRules(){
+      this.postRules=[]
+      this.rules.forEach((iterm) => {
+        var gv=iterm.groupres.split(':')
+        var g=gv[0]
+        var r=gv[1]
+        if (g==="core")
+          g=""
+        this.postRules.push({apiGroups:[g],resources:[r],verbs:iterm.verbs})
+      })
+    },
     save() {
-
+      this.concatRules()
+      const postData = { metadata: { name: this.roleName, namespace: this.namespace }, rules: this.postRules };
+      console.log(postData)
+      // 将对象转换为 JSON 字符串
+      const jsonData = JSON.stringify(postData);
+      console.log(jsonData)
+      CreateRole(jsonData).then(rsp=>{
+        this.errorMsg= ''
+        if (rsp.data==="success")
+          alert("创建成功")
+        this.$router.push({ name: 'Rolelist' }); // 成功后跳转到Rolelist路由
+      }).catch((error)=>{
+        if(error.response){
+          this.errorMsg = JSON.stringify(error.response.data)
+        }else{
+          this.errorMsg = JSON.stringify(error.message)
+        }
+      })
     }
   },
 };

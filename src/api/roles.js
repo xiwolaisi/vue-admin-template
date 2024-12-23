@@ -7,3 +7,13 @@ export function getRolesByNs(ns) {
     method: 'get',
   })
 }
+export function CreateRole(data) {
+  return request({
+    url: '/roles',
+    method: 'post',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    data
+  })
+}
