@@ -91,16 +91,40 @@ export const constantRoutes = [
     meta: { title: 'RBAC管理', icon: 'el-icon-s-help' },
     children: [
       {
+        path: 'serviceaccountlist',
+        name: 'ServiceAccountlist',
+        component: () => import('@/views/rbac/serviceaccountslist'),
+        meta: { title: 'ServiceAccount列表', icon: 'table' },
+      },
+      {
+        path: 'creatserviceaccount',
+        name: 'Createserrrviceaccount',
+        component: () => import('@/views/rbac/createrole'),
+        meta: { title: '创建ServiceAccount', icon: 'table' },
+      },
+      {
         path: 'rolelist',
         name: 'Rolelist',
         component: () => import('@/views/rbac/roleslist'),
         meta: { title: 'Role列表', icon: 'table' },
       },
       {
-        path: 'createrolel',
+        path: 'createrole',
         name: 'Createrole',
         component: () => import('@/views/rbac/createrole'),
         meta: { title: '创建Role', icon: 'table' },
+      },
+      {
+        path: 'rolebindinglist',
+        name: 'Rolebindinglist',
+        component: () => import('@/views/rbac/rolebindingslist'),
+        meta: { title: 'RoleBinding列表', icon: 'table' },
+      },
+      {
+        path: 'createrolebinding',
+        name: 'Createrolebinding',
+        component: () => import('@/views/rbac/createrolebinding'),
+        meta: { title: '创建RoleBinding', icon: 'table' },
       }
     ]
   },
